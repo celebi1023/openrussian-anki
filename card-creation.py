@@ -8,17 +8,12 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
 
-word = None
-if len(sys.argv) > 1:
-    word = sys.argv[1]
-else:
-    word = input('Input word: ')
-
+word = word = sys.argv[1] if len(sys.argv) > 1 else input("Input word: ")
 chrome_driver_path = r"../drivers/chromedriver_win32/chromedriver.exe"
 
 # make chrome log requests
 capabilities = DesiredCapabilities.CHROME
-capabilities["goog:loggingPrefs"] = {"performance": "ALL"} 
+capabilities["goog:loggingPrefs"] = {"performance": "ALL"}
 
 chrome_options = Options()
 chrome_options.add_experimental_option("w3c", False)
@@ -55,6 +50,7 @@ logs = [json.loads(lr["message"])["message"] for lr in logs_raw]
 
 audio_api_addr = r"https://api.openrussian.org/read/ru/"
 
+
 def is_audio_request(log):
     if "request" not in log["params"] or "url" not in log["params"]["request"]:
         return False
@@ -78,6 +74,7 @@ driver.close()
 def request(action, **params):
     return {"action": action, "params": params, "version": 6}
 
+
 def invoke(action, **params):
     requestJson = json.dumps(request(action, **params)).encode("utf-8")
     response = json.load(
@@ -95,16 +92,17 @@ def invoke(action, **params):
         raise Exception(response["error"])
     return response["result"]
 
+
 # create card content
-content = ''
+content = ""
 content += word
-content += '\n\n' + overview
-content += '\n\n' + translations
+content += "\n\n" + overview
+content += "\n\n" + translations
 if usage:
-    content += '\n\n' + usage
+    content += "\n\n" + usage
 if conjugation:
-    content += '\n\n' + conjugation
-content = content.replace('\n', '<br>')
+    content += "\n\n" + conjugation
+content = content.replace("\n", "<br>")
 
 result = invoke(
     "addNotes",
@@ -114,17 +112,13 @@ result = invoke(
             "modelName": "Basic",
             "fields": {"Front": word, "Back": content},
             "tags": ["script"],
-            "audio": [{
-                    "url": audio_url,
-                    "filename": word + ".mp3",
-                    "fields": [
-                        "Back"
-                    ]
-            }],
+            "audio": [
+                {"url": audio_url, "filename": word + ".mp3", "fields": ["Back"]}
+            ],
         }
     ],
 )
 if result[0]:
-    print('Successfully added card to deck.')
+    print("Successfully added card to deck.")
 else:
-    print('Failed to add card to deck.')
+    print("Failed to add card to deck.")
