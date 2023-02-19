@@ -23,6 +23,11 @@ driver = webdriver.Chrome(
 )
 
 driver.get("https://en.openrussian.org/ru/" + word)
+# extract word with stress
+bare = driver.find_element(By.CLASS_NAME, "bare")
+word_with_stress = bare.find_element(By.XPATH, "./h1/span[1]").text
+print(word_with_stress)
+
 overview = driver.find_element(By.CLASS_NAME, "overview").text
 translations = driver.find_element(By.CLASS_NAME, "section.translations").text
 
@@ -95,8 +100,9 @@ def invoke(action, **params):
 
 # create card content
 content = ""
-content += word
-content += "\n\n" + overview
+content += word_with_stress
+if len(overview) > 0:
+    content += "\n\n" + overview
 content += "\n\n" + translations
 if usage:
     content += "\n\n" + usage
