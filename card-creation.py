@@ -8,7 +8,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
 
-word = word = sys.argv[1] if len(sys.argv) > 1 else input("Input word: ")
+word = sys.argv[1] if len(sys.argv) > 1 else input("Input word: ")
 chrome_driver_path = r"../drivers/chromedriver_win32/chromedriver.exe"
 
 # make chrome log requests
@@ -26,7 +26,6 @@ driver.get("https://en.openrussian.org/ru/" + word)
 # extract word with stress
 bare = driver.find_element(By.CLASS_NAME, "bare")
 word_with_stress = bare.find_element(By.XPATH, "./h1/span[1]").text
-print(word_with_stress)
 
 overview = driver.find_element(By.CLASS_NAME, "overview").text
 translations = driver.find_element(By.CLASS_NAME, "section.translations").text
