@@ -9,6 +9,7 @@ from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
 
 word = sys.argv[1] if len(sys.argv) > 1 else input("Input word: ")
+word = word.strip()
 chrome_driver_path = r"../drivers/chromedriver_win32/chromedriver.exe"
 
 # make chrome log requests
